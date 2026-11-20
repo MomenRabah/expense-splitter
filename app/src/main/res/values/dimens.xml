@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared sizes. Owner: Mohammad. Extend freely; never hard-code dp/sp in layouts. -->
+<resources>
+    <dimen name="space_small">4dp</dimen>
+    <dimen name="space_medium">8dp</dimen>
+    <dimen name="space_large">16dp</dimen>
+
+    <dimen name="text_body">16sp</dimen>
+    <dimen name="text_amount">18sp</dimen>
+</resources>

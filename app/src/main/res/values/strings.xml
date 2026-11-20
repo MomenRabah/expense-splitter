@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">SplitApp</string>
+
+    <!-- Tabs -->
+    <string name="tab_expenses">Expenses</string>
+    <string name="tab_balances">Balances</string>
+    <string name="tab_settle">Settle</string>
+    <string name="tab_members">Members</string>
+
+    <!-- Actions (menus and buttons) -->
+    <string name="action_add_expense">Add expense</string>
+    <string name="action_add_group">Create group</string>
+    <string name="action_open_demo_group">Open demo group</string>
+
+    <!-- Errors -->
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_no_group">Group not found</string>
+
+    <!-- Skeleton placeholders: remove as each screen is built -->
+    <string name="placeholder_groups">No groups yet. Tap Create group to add one.</string>
+    <string name="placeholder_expenses">Expenses will appear here.</string>
+    <string name="placeholder_balances">Balances will appear here.</string>
+    <string name="placeholder_settle">Suggested payments will appear here.</string>
+    <string name="placeholder_members">Members will appear here.</string>
+    <string name="msg_add_expense_coming">Add expense is coming soon</string>
+    <string name="msg_create_group_coming">Create group is coming soon</string>
+</resources>
