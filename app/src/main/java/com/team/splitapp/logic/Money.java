@@ -1,118 +1,99 @@
 package com.team.splitapp.logic;
 
-import java.math.BigDecimal;
-import java.util.Locale;
-
 /**
  * Converts between what the user types ("12.50") and what we store (1250 halalas).
  *
- * <p>Team rule: money is a {@code long} number of halalas everywhere in the app.
+ * Team rule: money is a long number of halalas everywhere in the app.
  * Never use float or double for an amount.
  */
-public final class Money {
+public class Money {
 
-    public static final int HALALAS_PER_RIYAL = 100;
-
-    /** Largest amount accepted from the user: 10,000,000.00 SAR. Stops overflow and typos. */
-    public static final long MAX_HALALAS = 1_000_000_000L;
-
-    private Money() {
-    }
+    /** Returned by parse() when the text is not a valid amount. */
+    public static final long INVALID = -1;
 
     /**
-     * Parses user input into halalas.
-     *
-     * <p>Accepts "12", "12.5", "12.50", ".5", surrounding spaces, thousands commas ("1,250.00"),
-     * Arabic-Indic digits and the Arabic decimal separator. Returns {@code null} if the text is
-     * empty, not a number, negative, has more than 2 decimals, or is above {@link #MAX_HALALAS}.
-     * Zero is returned as 0: the caller decides whether 0 is allowed (for an expense it is not).
+     * Converts text like "12", "12.5" or "12.50" into halalas (1200, 1250, 1250).
+     * Returns INVALID if the text is empty, negative, not a number,
+     * or has more than 2 digits after the dot.
+     * "0" returns 0, so the caller must still check that the amount is greater than 0.
      */
-    public static Long parse(String text) {
+    public static long parse(String text) {
         if (text == null) {
-            return null;
+            return INVALID;
         }
-        BigDecimal value = toDecimal(text);
-        if (value == null || value.signum() < 0) {
-            return null;
+        text = text.trim();
+        if (text.length() == 0) {
+            return INVALID;
         }
-        if (value.stripTrailingZeros().scale() > 2) {
-            return null; // 12.345
+
+        String riyalPart;
+        String halalaPart;
+        int dot = text.indexOf('.');
+        if (dot == -1) {
+            riyalPart = text;
+            halalaPart = "";
+        } else {
+            riyalPart = text.substring(0, dot);
+            halalaPart = text.substring(dot + 1);
         }
-        BigDecimal halalas = value.movePointRight(2);
-        if (halalas.compareTo(BigDecimal.valueOf(MAX_HALALAS)) > 0) {
-            return null;
+
+        if (riyalPart.length() == 0 && halalaPart.length() == 0) {
+            return INVALID; // just "."
         }
-        return halalas.longValueExact();
+        if (riyalPart.length() == 0) {
+            riyalPart = "0"; // ".5" means 0.5
+        }
+        if (!isDigits(riyalPart) || !isDigits(halalaPart)) {
+            return INVALID;
+        }
+        if (halalaPart.length() > 2) {
+            return INVALID; // 12.345
+        }
+        if (riyalPart.length() > 9) {
+            return INVALID; // too large
+        }
+
+        // Make the halala part exactly 2 digits: "" -> "00", "5" -> "50"
+        while (halalaPart.length() < 2) {
+            halalaPart = halalaPart + "0";
+        }
+
+        long riyals = Long.parseLong(riyalPart);
+        long halalas = Long.parseLong(halalaPart);
+        return riyals * 100 + halalas;
     }
 
-    /** Why {@link #parse} rejected a value, for showing the right TextInputLayout error. */
-    public enum Problem { EMPTY, NOT_A_NUMBER, NOT_POSITIVE, TOO_MANY_DECIMALS, TOO_LARGE }
-
-    /**
-     * Validates an expense/payment amount. Returns {@code null} if it is valid (> 0, at most two
-     * decimals, not too large), otherwise the first problem found.
-     */
-    public static Problem validatePositive(String text) {
-        if (text == null || text.trim().isEmpty()) {
-            return Problem.EMPTY;
-        }
-        BigDecimal value = toDecimal(text);
-        if (value == null) {
-            return Problem.NOT_A_NUMBER;
-        }
-        if (value.signum() <= 0) {
-            return Problem.NOT_POSITIVE;
-        }
-        if (value.stripTrailingZeros().scale() > 2) {
-            return Problem.TOO_MANY_DECIMALS;
-        }
-        if (value.movePointRight(2).compareTo(BigDecimal.valueOf(MAX_HALALAS)) > 0) {
-            return Problem.TOO_LARGE;
-        }
-        return null;
-    }
-
-    /** 1250 → "12.50", -5500 → "-55.00". Plain digits, for edit fields and CSV. */
+    /** Converts halalas into text: 1250 -> "12.50", -5500 -> "-55.00". */
     public static String format(long halalas) {
-        long abs = Math.abs(halalas);
-        String sign = halalas < 0 ? "-" : "";
-        return String.format(Locale.US, "%s%d.%02d", sign, abs / HALALAS_PER_RIYAL, abs % HALALAS_PER_RIYAL);
+        String sign = "";
+        if (halalas < 0) {
+            sign = "-";
+            halalas = -halalas;
+        }
+        long riyals = halalas / 100;
+        long rest = halalas % 100;
+        String restText;
+        if (rest < 10) {
+            restText = "0" + rest;
+        } else {
+            restText = "" + rest;
+        }
+        return sign + riyals + "." + restText;
     }
 
-    /** 1250 → "12.50 SAR". For labels; the currency code comes from the group. */
+    /** Same as format() with the currency after it: 1250 -> "12.50 SAR". */
     public static String format(long halalas, String currency) {
         return format(halalas) + " " + currency;
     }
 
-    /** Plain decimal only: optional minus, digits, optional dot + digits. No exponents. */
-    private static final java.util.regex.Pattern DECIMAL =
-            java.util.regex.Pattern.compile("-?(\\d+\\.?\\d*|\\.\\d+)");
-
-    private static BigDecimal toDecimal(String text) {
-        String s = normalizeDigits(text.trim()).replace(",", "");
-        if (!DECIMAL.matcher(s).matches()) {
-            return null;
-        }
-        return new BigDecimal(s);
-    }
-
-    /** Maps Arabic-Indic (٠-٩) and Eastern Arabic-Indic (۰-۹) digits and '٫' to ASCII. */
-    static String normalizeDigits(String s) {
-        StringBuilder out = new StringBuilder(s.length());
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c >= '٠' && c <= '٩') {
-                out.append((char) ('0' + (c - '٠')));
-            } else if (c >= '۰' && c <= '۹') {
-                out.append((char) ('0' + (c - '۰')));
-            } else if (c == '٫') {
-                out.append('.');
-            } else if (c == '٬') {
-                out.append(',');
-            } else {
-                out.append(c);
+    /** True if every character of text is a digit 0-9 (an empty string counts as true). */
+    private static boolean isDigits(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
             }
         }
-        return out.toString();
+        return true;
     }
 }

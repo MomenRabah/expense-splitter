@@ -1,115 +1,98 @@
 package com.team.splitapp.logic;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.HashMap;
 
 /**
  * Computes each member's balance in a group.
  *
- * <pre>balance = total paid − total share + payments sent − payments received</pre>
+ *   balance = total paid - total share + payments sent - payments received
  *
- * <p>Positive means the group owes the member money; negative means the member owes.
- * Only PAID settlements are fed in. Balances in a group always sum to exactly 0.
+ * Positive balance: the group owes the member money.
+ * Negative balance: the member owes the group money.
+ * All balances in a group add up to 0.
  *
- * <p>Pure Java with no Android or database types. The
- * screen code reads rows from SQLite and feeds them in with the add* methods:
- * <pre>
- * BalanceCalculator calc = new BalanceCalculator(memberIds);
- * for (expense)  calc.addPaid(expense.payerId, expense.amount);
- * for (share)    calc.addShare(share.memberId, share.share);
- * for (paid settlement) calc.addSettlement(s.fromMember, s.toMember, s.amount);
- * Map&lt;Long, Long&gt; balances = calc.getBalances();
- * </pre>
- * Not thread-safe; create one per calculation on the background thread.
+ * How to use it (on a background thread):
+ *
+ *   BalanceCalculator calc = new BalanceCalculator(memberIds);
+ *   for each expense:         calc.addPaid(payerId, amount);
+ *   for each expense share:   calc.addShare(memberId, share);
+ *   for each PAID settlement: calc.addSettlement(fromMember, toMember, amount);
+ *   long b = calc.getBalance(memberId);
  */
-public final class BalanceCalculator {
+public class BalanceCalculator {
 
-    /** Sorted by member id so output order is stable (and matches "first by id" rules). */
-    private final TreeMap<Long, Long> balances = new TreeMap<>();
+    private ArrayList<Long> memberIds;
+    private HashMap<Long, Long> balances;
 
-    /** @param memberIds every member of the group, so members with no activity show 0. */
-    public BalanceCalculator(Collection<Long> memberIds) {
-        for (Long id : memberIds) {
-            balances.put(id, 0L);
+    /** memberIds: every member of the group, so members with no expenses still show 0. */
+    public BalanceCalculator(ArrayList<Long> memberIds) {
+        this.memberIds = memberIds;
+        this.balances = new HashMap<>();
+        for (int i = 0; i < memberIds.size(); i++) {
+            balances.put(memberIds.get(i), 0L);
         }
     }
 
-    /** {@code memberId} paid {@code amount} for an expense. */
-    public BalanceCalculator addPaid(long memberId, long amount) {
-        requireNonNegative(amount);
+    /** The member paid this amount for an expense. */
+    public void addPaid(long memberId, long amount) {
         add(memberId, amount);
-        return this;
     }
 
-    /** {@code memberId}'s share of an expense is {@code amount}. */
-    public BalanceCalculator addShare(long memberId, long amount) {
-        requireNonNegative(amount);
+    /** The member's share of an expense. */
+    public void addShare(long memberId, long amount) {
         add(memberId, -amount);
-        return this;
     }
 
-    /** A PAID settlement: {@code from} paid {@code to} {@code amount}. */
-    public BalanceCalculator addSettlement(long fromMemberId, long toMemberId, long amount) {
-        requireNonNegative(amount);
+    /** A paid settlement: fromMemberId paid toMemberId this amount. */
+    public void addSettlement(long fromMemberId, long toMemberId, long amount) {
         add(fromMemberId, amount);
         add(toMemberId, -amount);
-        return this;
+    }
+
+    public long getBalance(long memberId) {
+        Long value = balances.get(memberId);
+        if (value == null) {
+            return 0;
+        }
+        return value;
+    }
+
+    public ArrayList<Long> getMemberIds() {
+        return memberIds;
+    }
+
+    public HashMap<Long, Long> getBalances() {
+        return balances;
+    }
+
+    private void add(long memberId, long amount) {
+        balances.put(memberId, getBalance(memberId) + amount);
     }
 
     /**
-     * Member id → balance in halalas, ordered by member id.
+     * Splits total equally between the participants.
+     * Leftover halalas go one each to the participants with the smallest ids,
+     * so 10000 split over 3 gives 3334, 3333, 3333. The shares always add up to total.
      *
-     * @throws IllegalStateException if the balances do not sum to 0, which means an expense's
-     *         shares do not add up to its amount (a data bug we want to catch early).
+     * Returns a map: member id -> share.
      */
-    public Map<Long, Long> getBalances() {
-        long sum = 0;
-        for (long b : balances.values()) {
-            sum = Math.addExact(sum, b);
-        }
-        if (sum != 0) {
-            throw new IllegalStateException("Balances sum to " + sum + " halalas, expected 0");
-        }
-        return Collections.unmodifiableMap(new LinkedHashMap<>(balances));
-    }
+    public static HashMap<Long, Long> splitEqually(long total, ArrayList<Long> participantIds) {
+        ArrayList<Long> ids = new ArrayList<>(participantIds);
+        Collections.sort(ids);
 
-    private void add(long memberId, long delta) {
-        Long current = balances.get(memberId);
-        balances.put(memberId, Math.addExact(current == null ? 0L : current, delta));
-    }
+        long count = ids.size();
+        long baseShare = total / count;
+        long leftover = total % count;
 
-    private static void requireNonNegative(long amount) {
-        if (amount < 0) {
-            throw new IllegalArgumentException("Amount must not be negative: " + amount);
-        }
-    }
-
-    /**
-     * Splits {@code total} equally between participants. Remainder halalas go one each to the
-     * participants with the lowest ids, so 10000 over 3 → 3334, 3333, 3333. The shares always
-     * add up to exactly {@code total}.
-     *
-     * @return member id → share, ordered by member id.
-     */
-    public static Map<Long, Long> splitEqually(long total, Collection<Long> participantIds) {
-        if (total <= 0) {
-            throw new IllegalArgumentException("Total must be > 0");
-        }
-        List<Long> ids = new ArrayList<>(new TreeSet<>(participantIds));
-        if (ids.isEmpty()) {
-            throw new IllegalArgumentException("At least one participant is required");
-        }
-        long base = total / ids.size();
-        long remainder = total % ids.size();
-        Map<Long, Long> shares = new LinkedHashMap<>();
+        HashMap<Long, Long> shares = new HashMap<>();
         for (int i = 0; i < ids.size(); i++) {
-            shares.put(ids.get(i), base + (i < remainder ? 1 : 0));
+            long share = baseShare;
+            if (i < leftover) {
+                share = share + 1;
+            }
+            shares.put(ids.get(i), share);
         }
         return shares;
     }

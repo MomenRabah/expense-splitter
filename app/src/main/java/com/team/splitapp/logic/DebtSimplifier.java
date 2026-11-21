@@ -1,65 +1,58 @@
 package com.team.splitapp.logic;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.HashMap;
 
 /**
  * Turns balances into a short list of payments that settles everyone.
  *
- * <p>Greedy algorithm: creditors (balance &gt; 0) and debtors (balance &lt; 0) go into two
- * max-heaps. Repeatedly the largest debtor pays the largest creditor the smaller of the two
- * amounts; whoever still has something left goes back into its heap. Each step clears at
- * least one member, so there are at most n − 1 payments for n members.
+ * Greedy algorithm: repeatedly take the member who owes the most (largest debtor)
+ * and the member who is owed the most (largest creditor). The debtor pays the creditor
+ * the smaller of the two amounts. Each step clears at least one member, so there are
+ * at most n - 1 payments for n members.
  *
- * <p>This gives few payments but not always the theoretical minimum (that problem is NP-hard);
- * see "Known limitations" in the report. Run it on {@code AppExecutors.diskIO()}.
+ * Example: Ahmed +200, Salam -55, Hassan -145
+ *   step 1: Hassan pays Ahmed 145  (Ahmed +55, Hassan 0)
+ *   step 2: Salam pays Ahmed 55    (everyone 0)
  */
-public final class DebtSimplifier {
+public class DebtSimplifier {
 
-    private DebtSimplifier() {
-    }
+    public static ArrayList<Transfer> simplify(ArrayList<Long> memberIds, HashMap<Long, Long> balances) {
+        int n = memberIds.size();
 
-    /**
-     * @param balances member id → balance in halalas (from {@link BalanceCalculator}); must sum to 0.
-     * @return payments to make, largest first. Empty if everyone is already settled.
-     */
-    public static List<Transfer> simplify(Map<Long, Long> balances) {
-        long sum = 0;
-        // Ties are broken by lower member id so results are the same on every run.
-        PriorityQueue<long[]> creditors = new PriorityQueue<>(DebtSimplifier::largestFirst);
-        PriorityQueue<long[]> debtors = new PriorityQueue<>(DebtSimplifier::largestFirst);
-        for (Map.Entry<Long, Long> e : balances.entrySet()) {
-            long balance = e.getValue();
-            sum = Math.addExact(sum, balance);
-            if (balance > 0) {
-                creditors.add(new long[]{e.getKey(), balance});
-            } else if (balance < 0) {
-                debtors.add(new long[]{e.getKey(), -balance});
+        // Copy the balances into an array so we can change them.
+        long[] amounts = new long[n];
+        for (int i = 0; i < n; i++) {
+            Long value = balances.get(memberIds.get(i));
+            if (value != null) {
+                amounts[i] = value;
             }
         }
-        if (sum != 0) {
-            throw new IllegalArgumentException("Balances must sum to 0, got " + sum);
-        }
 
-        List<Transfer> transfers = new ArrayList<>();
-        while (!creditors.isEmpty() && !debtors.isEmpty()) {
-            long[] creditor = creditors.poll();
-            long[] debtor = debtors.poll();
-            long amount = Math.min(creditor[1], debtor[1]);
-            transfers.add(new Transfer(debtor[0], creditor[0], amount));
-            creditor[1] -= amount;
-            debtor[1] -= amount;
-            if (creditor[1] > 0) creditors.add(creditor);
-            if (debtor[1] > 0) debtors.add(debtor);
+        ArrayList<Transfer> transfers = new ArrayList<>();
+        while (true) {
+            // Find the largest creditor (most positive) and largest debtor (most negative).
+            int creditor = -1;
+            int debtor = -1;
+            for (int i = 0; i < n; i++) {
+                if (amounts[i] > 0 && (creditor == -1 || amounts[i] > amounts[creditor])) {
+                    creditor = i;
+                }
+                if (amounts[i] < 0 && (debtor == -1 || amounts[i] < amounts[debtor])) {
+                    debtor = i;
+                }
+            }
+
+            // Nobody owes or nobody is owed: everyone is settled.
+            if (creditor == -1 || debtor == -1) {
+                break;
+            }
+
+            long pay = Math.min(amounts[creditor], -amounts[debtor]);
+            transfers.add(new Transfer(memberIds.get(debtor), memberIds.get(creditor), pay));
+            amounts[creditor] = amounts[creditor] - pay;
+            amounts[debtor] = amounts[debtor] + pay;
         }
         return transfers;
-    }
-
-    /** Orders {id, amount} pairs by amount descending, then id ascending. */
-    private static int largestFirst(long[] a, long[] b) {
-        int byAmount = Long.compare(b[1], a[1]);
-        return byAmount != 0 ? byAmount : Long.compare(a[0], b[0]);
     }
 }

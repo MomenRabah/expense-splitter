@@ -15,6 +15,7 @@
     <!-- Errors -->
     <string name="error_generic">Something went wrong. Please try again.</string>
     <string name="error_no_group">Group not found</string>
+    <string name="error_amount">Enter an amount greater than 0 with at most 2 decimals</string>
 
     <!-- Skeleton placeholders: remove as each screen is built -->
     <string name="placeholder_groups">No groups yet. Tap Create group to add one.</string>

@@ -26,11 +26,15 @@ public class MembersFragment extends Fragment {
 
         long groupId = ((GroupActivity) getActivity()).getGroupId();
         // TODO(Mohammad): load data for groupId on a background thread, then show it:
-        // AppExecutors.runInBackground(() -> {
-        //     ... query the database ...
-        //     AppExecutors.runOnMainThread(() -> {
-        //         if (isAdded()) { ... update the views ... }
-        //     });
+        // AppExecutors.runInBackground(new Runnable() {
+        //     public void run() {
+        //         ... query the database (worker thread) ...
+        //         AppExecutors.runOnMainThread(new Runnable() {
+        //             public void run() {
+        //                 if (isAdded()) { ... update the views (UI thread) ... }
+        //             }
+        //         });
+        //     }
         // });
         return view;
     }

@@ -46,9 +46,11 @@ Create the `data`, `location` and `notify` packages in your own branch.
 12.50 SAR is stored as `1250`. Never use `double` or `float` for an amount.
 
 ```java
-Money.Problem p = Money.validatePositive(amountText);   // null means valid
-long halalas = Money.parse(amountText);                 // "12.50" -> 1250
-String label = Money.format(halalas, "SAR");            // 1250 -> "12.50 SAR"
+long halalas = Money.parse(amountText);        // "12.50" -> 1250
+if (halalas == Money.INVALID || halalas == 0) {
+    amountInput.setError(getString(R.string.error_amount));
+}
+String label = Money.format(halalas, "SAR");   // 1250 -> "12.50 SAR"
 ```
 
 Equal splits must use `BalanceCalculator.splitEqually(total, participantIds)`. It gives any leftover halalas to the lowest member ids (10000 / 3 -> 3334, 3333, 3333), so the shares always add up to the total.
@@ -58,13 +60,23 @@ Equal splits must use `BalanceCalculator.splitEqually(total, participantIds)`. I
 Do the slow work on a worker thread, then post the result back to the UI thread with the Handler inside `AppExecutors`:
 
 ```java
-AppExecutors.runInBackground(() -> {
-    List<Expense> expenses = dao.getExpenses(groupId);          // worker thread
-    AppExecutors.runOnMainThread(() -> {
-        if (isAdded()) showExpenses(expenses);                  // UI thread
-    });
+AppExecutors.runInBackground(new Runnable() {
+    public void run() {
+        final ArrayList<Expense> expenses = dao.getExpenses(groupId);   // worker thread
+        AppExecutors.runOnMainThread(new Runnable() {
+            public void run() {
+                if (isAdded()) {
+                    showExpenses(expenses);                            // UI thread
+                }
+            }
+        });
+    }
 });
 ```
+
+### Code style: keep it basic Java
+
+Use classes, fields with getters, `if`/`else`, `for` loops, arrays, `ArrayList` and `HashMap`. Use anonymous classes (`new View.OnClickListener() { ... }`) for listeners and `Runnable`s. Avoid lambdas, streams, `Optional` and other advanced Java features.
 
 Check `isAdded()` in a fragment before touching views: the user may have switched tabs while the query was running.
 

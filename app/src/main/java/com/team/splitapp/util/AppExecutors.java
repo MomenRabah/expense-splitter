@@ -12,13 +12,19 @@ import android.os.Looper;
  * because views can only be touched from the UI (main) thread.
  *
  * <pre>
- * AppExecutors.runInBackground(() -&gt; {
- *     List&lt;Expense&gt; expenses = dao.getExpenses(groupId);      // slow: worker thread
- *     AppExecutors.runOnMainThread(() -&gt; showExpenses(expenses)); // UI: main thread
+ * AppExecutors.runInBackground(new Runnable() {
+ *     public void run() {
+ *         final ArrayList&lt;Expense&gt; expenses = dao.getExpenses(groupId); // worker thread
+ *         AppExecutors.runOnMainThread(new Runnable() {
+ *             public void run() {
+ *                 showExpenses(expenses);                                // UI thread
+ *             }
+ *         });
+ *     }
  * });
  * </pre>
  */
-public final class AppExecutors {
+public class AppExecutors {
 
     /** A Handler attached to the main thread's Looper delivers Runnables to the UI thread. */
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
