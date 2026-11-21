@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Groups list screen. Owner of the final layout: Mohammad. -->
+<!-- Groups list. Owner: Mohammad. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/space_large"
     tools:context=".ui.main.MainActivity">
 
-    <TextView
-        android:id="@+id/text_empty"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/placeholder_groups"
-        android:textSize="@dimen/text_body" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <!-- Skeleton only: remove once the groups list works. -->
+        <ListView
+            android:id="@+id/list"
+            style="@style/CardList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/text_empty"
+            style="@style/TextEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/empty_groups" />
+    </FrameLayout>
+
+    <!-- Skeleton only: remove once creating groups works (day 2). -->
     <Button
         android:id="@+id/button_open_demo_group"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_medium"
+        android:layout_margin="@dimen/space_medium"
         android:text="@string/action_open_demo_group" />
 
 </LinearLayout>

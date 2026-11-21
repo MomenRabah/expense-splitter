@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One participant row in the add-expense form. Owner: Hassan. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/check_participant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:checked="true"
+        android:minHeight="@dimen/touch_target"
+        android:textSize="@dimen/text_body"
+        tools:text="Salam" />
+
+    <!-- Only visible when the split is "Custom amounts". -->
+    <EditText
+        android:id="@+id/edit_share"
+        style="@style/FormField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="5"
+        android:hint="@string/hint_amount"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:visibility="gone" />
+
+</LinearLayout>

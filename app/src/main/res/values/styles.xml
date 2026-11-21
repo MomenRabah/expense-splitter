@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared text and layout styles. Owner: Mohammad. Use these instead of repeating attributes. -->
+<resources>
+
+    <!-- One card look for every list row in the app -->
+    <style name="Card">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:padding">@dimen/card_padding</item>
+    </style>
+
+    <!-- ListView that shows cards with a gap between them -->
+    <style name="CardList">
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">@dimen/space_medium</item>
+        <item name="android:padding">@dimen/list_padding</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
+    <style name="TextTitle">
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="TextBody">
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="TextSecondary">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <!-- Amounts are always 18sp bold -->
+    <style name="TextAmount">
+        <item name="android:textSize">@dimen/text_amount</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="TextEmpty" parent="TextSecondary">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/space_xlarge</item>
+    </style>
+
+    <style name="FormLabel" parent="TextSecondary">
+        <item name="android:layout_marginTop">@dimen/space_large</item>
+    </style>
+
+    <style name="FormField">
+        <item name="android:minHeight">@dimen/touch_target</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+</resources>

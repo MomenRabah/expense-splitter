@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shown in the create-group spinner. Order matches group_type_values. -->
+    <string-array name="group_types">
+        <item>@string/group_type_trip</item>
+        <item>@string/group_type_home</item>
+        <item>@string/group_type_other</item>
+    </string-array>
+
+    <!-- Stored in the database (groups.type). Do not translate. -->
+    <string-array name="group_type_values" translatable="false">
+        <item>trip</item>
+        <item>home</item>
+        <item>other</item>
+    </string-array>
+</resources>

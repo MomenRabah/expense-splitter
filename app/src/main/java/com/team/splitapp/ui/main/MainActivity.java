@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.team.splitapp.R;
+import com.team.splitapp.notify.NotificationHelper;
 import com.team.splitapp.ui.group.GroupActivity;
 
 /**
@@ -25,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Notifications (Ahmed): the channel must exist before any reminder is shown,
+        // and Android 13+ asks the user once for permission.
+        NotificationHelper.createChannel(this);
+        NotificationHelper.requestPermission(this);
 
         Button openDemo = findViewById(R.id.button_open_demo_group);
         openDemo.setOnClickListener(new View.OnClickListener() {

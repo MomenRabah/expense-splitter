@@ -1,28 +1,90 @@
 <resources>
     <string name="app_name">SplitApp</string>
 
-    <!-- Tabs -->
+    <!-- Tabs and screens -->
     <string name="tab_expenses">Expenses</string>
     <string name="tab_balances">Balances</string>
     <string name="tab_settle">Settle</string>
     <string name="tab_members">Members</string>
+    <string name="title_history">Payment history</string>
+    <string name="title_trip_map">Trip map</string>
+    <string name="title_add_expense">Add expense</string>
 
-    <!-- Actions (menus and buttons) -->
+    <!-- Menu and button actions -->
     <string name="action_add_expense">Add expense</string>
     <string name="action_add_group">Create group</string>
     <string name="action_open_demo_group">Open demo group</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_add_member">Add member</string>
+    <string name="action_import_contact">Import from contacts</string>
+    <string name="action_mark_paid">Mark paid</string>
+    <string name="action_share_summary">Share summary</string>
+    <string name="action_share_whatsapp">Send on WhatsApp</string>
+    <string name="action_set_reminder">Remind me</string>
+    <string name="action_history">History</string>
+    <string name="action_use_my_location">Use my location</string>
+    <string name="action_pick_on_map">Pick on map</string>
+    <string name="action_open_in_maps">Open in Maps</string>
+    <string name="action_trip_map">Trip map</string>
+
+    <!-- Groups (Mohammad) -->
+    <string name="empty_groups">No groups yet. Tap Create group to add one.</string>
+    <string name="label_group_name">Group name</string>
+    <string name="hint_group_name">e.g. Riyadh trip</string>
+    <string name="label_group_type">Type</string>
+    <string name="group_type_trip">Trip</string>
+    <string name="group_type_home">Home</string>
+    <string name="group_type_other">Other</string>
+    <string name="group_summary">%1$d members · %2$s</string>
+
+    <!-- Members (Mohammad) -->
+    <string name="empty_members">No members yet. Add the people in this group.</string>
+    <string name="label_member_name">Name</string>
+    <string name="label_member_phone">Phone (optional)</string>
+
+    <!-- Expenses (Hassan) -->
+    <string name="empty_expenses">No expenses yet. Tap Add expense.</string>
+    <string name="label_description">Description</string>
+    <string name="hint_description">e.g. Dinner</string>
+    <string name="label_amount">Amount (SAR)</string>
+    <string name="hint_amount">0.00</string>
+    <string name="label_paid_by">Paid by</string>
+    <string name="label_date">Date</string>
+    <string name="label_split">Split</string>
+    <string name="split_equal">Equally</string>
+    <string name="split_custom">Custom amounts</string>
+    <string name="label_participants">Split between</string>
+    <string name="label_location">Location (optional)</string>
+    <string name="no_location">No location</string>
+    <string name="expense_paid_by">Paid by %1$s</string>
+
+    <!-- Balances, settle, history (Abdullah) -->
+    <string name="empty_balances">Add expenses to see who owes what.</string>
+    <string name="empty_settle">Everyone is settled up.</string>
+    <string name="empty_history">No payments yet.</string>
+    <string name="balance_is_owed">is owed</string>
+    <string name="balance_owes">owes</string>
+    <string name="balance_settled">settled</string>
+    <string name="settle_pays">%1$s pays %2$s</string>
+    <string name="history_paid_on">Paid on %1$s</string>
+    <string name="settle_hint">Fewest payments to settle everyone:</string>
+
+    <!-- Map (Salam) -->
+    <string name="offline_banner">You are offline. Map tiles may not load, but locations are still saved.</string>
+
+    <!-- Notifications (Ahmed) -->
+    <string name="channel_reminders_name">Payment reminders</string>
+    <string name="channel_reminders_description">Reminders to settle up and backup results</string>
 
     <!-- Errors -->
     <string name="error_generic">Something went wrong. Please try again.</string>
     <string name="error_no_group">Group not found</string>
     <string name="error_amount">Enter an amount greater than 0 with at most 2 decimals</string>
+    <string name="error_required">This field is required</string>
 
     <!-- Skeleton placeholders: remove as each screen is built -->
-    <string name="placeholder_groups">No groups yet. Tap Create group to add one.</string>
-    <string name="placeholder_expenses">Expenses will appear here.</string>
-    <string name="placeholder_balances">Balances will appear here.</string>
-    <string name="placeholder_settle">Suggested payments will appear here.</string>
-    <string name="placeholder_members">Members will appear here.</string>
     <string name="msg_add_expense_coming">Add expense is coming soon</string>
     <string name="msg_create_group_coming">Create group is coming soon</string>
 </resources>

@@ -1,8 +1,9 @@
 <resources>
-    <!-- Base application theme with the default action bar. Owner: Mohammad. -->
+    <!-- App theme with the default action bar. Owner: Mohammad. -->
     <style name="Theme.SplitApp" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
 </resources>

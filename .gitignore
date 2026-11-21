@@ -1,15 +1,25 @@
+# Android Studio / IntelliJ: per-machine settings, cause merge conflicts
 *.iml
+/.idea/
+
+# Gradle and build output
 .gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
 /build
+/app/build
 /captures
 .externalNativeBuild
 .cxx
+
+# Local machine config: SDK path and the Google Maps API key
 local.properties
+
+# Release builds and signing keys (never commit a keystore)
+*.apk
+*.aab
+*.jks
+*.keystore
+/app/release/
+
+# OS files
+.DS_Store
+Thumbs.db

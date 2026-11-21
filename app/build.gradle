@@ -2,6 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+// Read the Google Maps API key from local.properties (never committed to Git).
+// Each member adds this line to their own local.properties:  MAPS_API_KEY=AIza...
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { stream -> localProperties.load(stream) }
+}
+
 android {
     namespace 'com.team.splitapp'
     compileSdk {
@@ -14,6 +22,9 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
+
+        // Replaces ${MAPS_API_KEY} in AndroidManifest.xml
+        manifestPlaceholders = [MAPS_API_KEY: localProperties.getProperty('MAPS_API_KEY', '')]
     }
 
     buildTypes {
@@ -32,4 +43,5 @@ android {
 dependencies {
     implementation libs.appcompat
     implementation libs.constraintlayout
+    implementation libs.play.services.maps
 }

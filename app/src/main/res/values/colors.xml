@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Starter palette. Owner: Mohammad (final colours on day 1). -->
+<!-- App palette. Owner: Mohammad. Use these names, never a #hex in a layout. -->
 <resources>
     <color name="primary">#FF0F5E5B</color>
     <color name="primary_dark">#FF0B4A47</color>
     <color name="accent">#FFE07A2E</color>
+
+    <color name="window_background">#FFF4F6F6</color>
+    <color name="card_background">#FFFFFFFF</color>
+    <color name="card_border">#1F000000</color>
     <color name="divider">#1F000000</color>
+
+    <!-- Balance colours: green = is owed money, red = owes money -->
+    <color name="amount_positive">#FF1B7F3B</color>
+    <color name="amount_negative">#FFC62828</color>
+
+    <color name="banner_background">#FFFFE8D6</color>
+    <color name="banner_text">#FF5A2D0C</color>
 </resources>

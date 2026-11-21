@@ -1,0 +1,7 @@
+# Normalise line endings so Windows and Mac teammates get clean diffs
+* text=auto
+*.bat text eol=crlf
+gradlew text eol=lf
+*.jar binary
+*.png binary
+*.webp binary

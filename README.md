@@ -11,7 +11,13 @@ We only use techniques taught in the CS 526 lectures: Activities and their lifec
 2. Let Gradle sync, then run the `app` configuration.
 3. Check out `develop` and branch from it: `git checkout -b feature/<your-task>`.
 
-`local.properties` is not in Git. Salam: put the Maps API key there as `MAPS_API_KEY=...`.
+`local.properties` is not in Git. Everyone adds the Google Maps API key (Salam shares it in the group chat) as one line in their own `local.properties`:
+
+```
+MAPS_API_KEY=your-key-here
+```
+
+Without it the app still builds, but the map shows a grey screen.
 
 ## Branch and merge rules
 
@@ -33,11 +39,14 @@ com.team.splitapp
 ├── logic/          Money, BalanceCalculator, DebtSimplifier, Transfer (plain Java)
 ├── util/           AppExecutors (background thread + Handler), Extras (intent keys)
 ├── data/           (Fadhlallah) SplitContract, SplitDbHelper, DAOs, SplitProvider
-├── location/       (Salam)
-└── notify/         (Ahmed) receivers, BackupService
+├── model/          (Fadhlallah) Group, Member, Expense, ExpenseShare, Settlement
+├── location/       (Salam) MapActivity
+└── notify/         (Ahmed) NotificationHelper, receivers, BackupService
 ```
 
-Create the `data`, `location` and `notify` packages in your own branch.
+Layouts: every list row uses `style="@style/Card"` and every list uses `style="@style/CardList"` (see `res/values/styles.xml`). Lists are a `ListView` with an `ArrayAdapter`, and an empty-state `TextView` set with `listView.setEmptyView(...)`.
+
+Test plan: [docs/test-matrix.md](docs/test-matrix.md).
 
 ## Rules everyone follows
 

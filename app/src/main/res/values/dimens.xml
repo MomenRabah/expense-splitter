@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Shared sizes. Owner: Mohammad. Extend freely; never hard-code dp/sp in layouts. -->
+<!-- Shared sizes. Owner: Mohammad. Never hard-code dp/sp in a layout. -->
 <resources>
     <dimen name="space_small">4dp</dimen>
     <dimen name="space_medium">8dp</dimen>
     <dimen name="space_large">16dp</dimen>
+    <dimen name="space_xlarge">24dp</dimen>
 
+    <dimen name="text_small">14sp</dimen>
     <dimen name="text_body">16sp</dimen>
     <dimen name="text_amount">18sp</dimen>
+    <dimen name="text_title">20sp</dimen>
+
+    <dimen name="card_corner">8dp</dimen>
+    <dimen name="card_padding">12dp</dimen>
+    <dimen name="card_border">1dp</dimen>
+    <dimen name="list_padding">8dp</dimen>
+    <dimen name="touch_target">48dp</dimen>
+    <dimen name="banner_padding">8dp</dimen>
 </resources>

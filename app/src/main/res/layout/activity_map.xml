@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trip map: one marker per located expense. Owner: Salam.
+     The map is a static fragment declared in XML (Lecture 7 + Lecture 13). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".location.MapActivity">
+
+    <!-- Shown by the airplane-mode receiver when there is no connection (day 5). -->
+    <TextView
+        android:id="@+id/text_offline_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/banner_background"
+        android:padding="@dimen/banner_padding"
+        android:text="@string/offline_banner"
+        android:textColor="@color/banner_text"
+        android:textSize="@dimen/text_small"
+        android:visibility="gone" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/button_open_in_maps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_medium"
+        android:text="@string/action_open_in_maps" />
+
+</LinearLayout>

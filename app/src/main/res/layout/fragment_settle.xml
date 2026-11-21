@@ -1,18 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Owner: Abdullah. Placeholder from the skeleton; replace with the real layout. -->
+<!-- Suggested payments. Owner: Abdullah. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/space_large">
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/text_placeholder"
+        style="@style/TextSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/placeholder_settle"
-        android:textSize="@dimen/text_body" />
+        android:paddingStart="@dimen/space_large"
+        android:paddingTop="@dimen/space_large"
+        android:paddingEnd="@dimen/space_large"
+        android:text="@string/settle_hint" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/list"
+            style="@style/CardList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/text_empty"
+            style="@style/TextEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/empty_settle" />
+    </FrameLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_share"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_share_summary" />
+
+        <Button
+            android:id="@+id/button_whatsapp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_share_whatsapp" />
+
+        <Button
+            android:id="@+id/button_reminder"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_set_reminder" />
+    </LinearLayout>
 
 </LinearLayout>
